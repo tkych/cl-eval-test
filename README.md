@@ -1,4 +1,4 @@
-Last modified : 2013-07-29 19:36:22 tkych
+Last modified : 2013-07-29 19:59:19 tkych
 
 version 0.0.01 (alpha)
 
@@ -35,42 +35,44 @@ Moreover, since test implies that how the program should work, the source code b
 Example
 -------
 
-In file [cl-eval-test/example1.lisp](https://github.com/tkych/cl-eval-test/blob/master/example2.lisp):
+In file [cl-eval-test/example1.lisp](https://github.com/tkych/cl-eval-test/blob/master/example1.lisp):
 
-    (eval-when (:compile-toplevel :load-toplevel)      ;Setup1: prelude for Eval-Test
-      (defparameter *features-tmp* *features*)         ;
-                                                       ;
-      ;; (setf *features* (delete :et *features*))     ; If loaded with no error, this line should be commented in,
-      (pushnew :et *features*)                         ; and this line should be commented out.
-      )                                                ;
+```lisp
+(eval-when (:compile-toplevel :load-toplevel)      ;Setup1: prelude for Eval-Test
+  (defparameter *features-tmp* *features*)         ;
+                                                   ; If loaded with no error, 
+  ;; (setf *features* (delete :et *features*))     ; this line should be commented in,
+  (pushnew :et *features*)                         ; and this line should be commented out.
+  )                                                ;
 
-    #+et                                               ;Setup2: define eval-tests
-    (eval-when (:compile-toplevel :load-toplevel)      ;
-      (defmacro =>? (form want &optional test-fn)      ;
-        `(assert (funcall ,(if test-fn test-fn ''equal);
-                      ,form ,want)))                   ;
-      )                                                ;
-
-
-    (defun deep-thought (the-answer-of-what)                     ;Source Part
-      (let ((d (loop :for char :across the-answer-of-what :collect (char-code char))))
-        (+ (* (reduce #'logand d)   (reduce #'logorc1 d))
-           (* (reduce #'lognand d)  (reduce #'logorc2 d))
-           (* (reduce #'logandc2 d) (reduce #'logior d))
-           (* (reduce #'logandc1 d)
-              (- (reduce #'logxor d) (reduce #'logeqv d))) (reduce #'lognor d))))
+#+et                                               ;Setup2: define eval-tests
+(eval-when (:compile-toplevel :load-toplevel)      ;
+  (defmacro =>? (form want &optional test-fn)      ;
+    `(assert (funcall ,(if test-fn test-fn ''equal);
+                  ,form ,want)))                   ;
+  )                                                ;
 
 
-    #+et (=>? (deep-thought "Life, the Universe and Everything") ;Test Part
-              42)                                                ;
-    #+et (=>? (deep-thought "The Value of Love")                 ;
-              52)                                                ;
-    #+et (=>? (deep-thought "The Value of Money")                ;
-              18885)                                             ;
+(defun deep-thought (the-answer-of-what)                     ;Source Part
+  (let ((d (loop :for char :across the-answer-of-what :collect (char-code char))))
+    (+ (* (reduce #'logand d)   (reduce #'logorc1 d))
+       (* (reduce #'lognand d)  (reduce #'logorc2 d))
+       (* (reduce #'logandc2 d) (reduce #'logior d))
+       (* (reduce #'logandc1 d)
+          (- (reduce #'logxor d) (reduce #'logeqv d))) (reduce #'lognor d))))
 
 
-    (eval-when (:compile-toplevel :load-toplevel)                ;Cleanup for Eval-Test
-      (setf *features* *features-tmp*))                          ;
+#+et (=>? (deep-thought "Life, the Universe and Everything") ;Test Part
+          42)                                                ;
+#+et (=>? (deep-thought "The Value of Love")                 ;
+          52)                                                ;
+#+et (=>? (deep-thought "The Value of Money")                ;
+          18885)                                             ;
+
+
+(eval-when (:compile-toplevel :load-toplevel)                ;Cleanup for Eval-Test
+  (setf *features* *features-tmp*))                          ;
+```
 
 
 If `(load (compile-file #p"example1.lisp"))`, then no error, good!, otherwise some tests fail.
