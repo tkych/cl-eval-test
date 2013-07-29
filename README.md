@@ -1,4 +1,4 @@
-Last modified : 2013-07-29 19:59:19 tkych
+Last modified : 2013-07-29 20:02:31 tkych
 
 version 0.0.01 (alpha)
 
@@ -38,22 +38,22 @@ Example
 In file [cl-eval-test/example1.lisp](https://github.com/tkych/cl-eval-test/blob/master/example1.lisp):
 
 ```lisp
-(eval-when (:compile-toplevel :load-toplevel)      ;Setup1: prelude for Eval-Test
-  (defparameter *features-tmp* *features*)         ;
-                                                   ; If loaded with no error, 
-  ;; (setf *features* (delete :et *features*))     ; this line should be commented in,
-  (pushnew :et *features*)                         ; and this line should be commented out.
-  )                                                ;
+(eval-when (:compile-toplevel :load-toplevel)   ; Setup1: prelude for Eval-Test
+  (defparameter *features-tmp* *features*)      ;
+                                                ; If loaded with no error, 
+  ;; (setf *features* (delete :et *features*))  ; this line should be commented in,
+  (pushnew :et *features*)                      ; and this line should be commented out.
+  )                                             ;
 
-#+et                                               ;Setup2: define eval-tests
+#+et                                               ; Setup2: define eval-tests
 (eval-when (:compile-toplevel :load-toplevel)      ;
-  (defmacro =>? (form want &optional test-fn)      ;
+  (defmacro =>? (form want &optional test-fn)      ; define =>?
     `(assert (funcall ,(if test-fn test-fn ''equal);
                   ,form ,want)))                   ;
   )                                                ;
 
 
-(defun deep-thought (the-answer-of-what)                     ;Source Part
+(defun deep-thought (the-answer-of-what)           ; Source Part
   (let ((d (loop :for char :across the-answer-of-what :collect (char-code char))))
     (+ (* (reduce #'logand d)   (reduce #'logorc1 d))
        (* (reduce #'lognand d)  (reduce #'logorc2 d))
@@ -62,7 +62,7 @@ In file [cl-eval-test/example1.lisp](https://github.com/tkych/cl-eval-test/blob/
           (- (reduce #'logxor d) (reduce #'logeqv d))) (reduce #'lognor d))))
 
 
-#+et (=>? (deep-thought "Life, the Universe and Everything") ;Test Part
+#+et (=>? (deep-thought "Life, the Universe and Everything") ; Test Part
           42)                                                ;
 #+et (=>? (deep-thought "The Value of Love")                 ;
           52)                                                ;
@@ -70,7 +70,7 @@ In file [cl-eval-test/example1.lisp](https://github.com/tkych/cl-eval-test/blob/
           18885)                                             ;
 
 
-(eval-when (:compile-toplevel :load-toplevel)                ;Cleanup for Eval-Test
+(eval-when (:compile-toplevel :load-toplevel)                ; Cleanup for Eval-Test
   (setf *features* *features-tmp*))                          ;
 ```
 
