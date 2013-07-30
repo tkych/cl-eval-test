@@ -1,8 +1,8 @@
-Last modified : 2013-07-29 20:02:31 tkych
+Last modified : 2013-07-30 20:04:29 tkych
 
 version 0.0.01 (alpha)
 
-(currently, this project is not a library, rather a technique for testing)
+(currently, this project is not a library, rather a technique for development)
 
 
 Eval-Test: `#+et (=>? form want)`
@@ -16,20 +16,25 @@ When we make a program, roughly speaking, we have two development styles:
 1. Water Fall Development Style: coding then testing,
 2. Test Driven Development Style: testing then coding.
 
+In both style, we have to write at least two files, 1. source code
+file, 2. test code file.  Since there are two separeting files, if you
+modify the one file, then you also have to modify the another file for
+consistancy.
 
-In both style, we have to write at least two files, 1. source code file, 2. test code file.
-Since there are two separeting files,
-if you modify the one file, then you also have to modify the another file for consistancy.
+Therefore, there are cost for switching files (src <-> test), and
+potentially mismuch possibility (src /~ test).
 
-Therefore, there are cost for switching files (*src <-> test*), and potentially mismuch possibility (*src /~ test*).
+ (You might insist that we can make one file which contains source at
+top part and tests at bottom part, so only one file exists. However,
+as far as these parts are separating, above logic applied too.)
 
- (You might insist that we can make one file which contains source at top part and tests at bottom part,
-so only one file exists. However, as far as these parts are separating, above logic applied too.)
+The goal of Eval-Test is to unify coding phase with testing phase in
+development cycle.
 
-The goal of Eval-Test is to unify coding phase with testing phase in development cycle.
-
-Including tests in source code, we can reduce the cost of switching files and the mismuch possibility in both styles.
-Moreover, since test implies that how the program should work, the source code becomes more readable.
+Including tests in source code, we can reduce the cost of switching
+files and the mismuch possibility in both styles.  Moreover, since
+test implies that how the program should work, the source code becomes
+more readable.
 
 
 Example
@@ -49,8 +54,7 @@ In file [cl-eval-test/example1.lisp](https://github.com/tkych/cl-eval-test/blob/
 (eval-when (:compile-toplevel :load-toplevel)      ;
   (defmacro =>? (form want &optional test-fn)      ; define =>?
     `(assert (funcall ,(if test-fn test-fn ''equal);
-                  ,form ,want)))                   ;
-  )                                                ;
+                  ,form ,want))))                  ;
 
 
 (defun deep-thought (the-answer-of-what)           ; Source Part
@@ -75,8 +79,9 @@ In file [cl-eval-test/example1.lisp](https://github.com/tkych/cl-eval-test/blob/
 ```
 
 
-If `(load (compile-file #p"example1.lisp"))`, then no error, good!, otherwise some tests fail.
-If you use slime, just C-c C-k in example1.lisp buffer.
+If `(load (compile-file #p"example1.lisp"))`, then no error, good!,
+otherwise some tests fail.  If you use slime, just C-c C-k in
+example1.lisp buffer.
 
 For more examples, please see
 [cl-eval-test/example2.lisp](https://github.com/tkych/cl-eval-test/blob/master/example2.lisp), or
